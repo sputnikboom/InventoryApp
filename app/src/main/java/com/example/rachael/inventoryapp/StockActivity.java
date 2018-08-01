@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 public class StockActivity extends AppCompatActivity {
@@ -21,5 +23,22 @@ public class StockActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.stock_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_dummy_data:
+                // TODO code to add dummy data to database
+            case R.id.action_delete_all_items:
+                // TODO code to delete all items
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
