@@ -15,5 +15,6 @@
     <string name="hint_item_price">Price</string>
     <string name="hint_item_quantity">Quantity</string>
     <string name="hint_supplier_phone_number">Phone Number</string>
+    <string name="add_item">Add Item</string>
 
 </resources>
