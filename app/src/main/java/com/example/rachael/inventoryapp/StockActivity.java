@@ -1,5 +1,6 @@
 package com.example.rachael.inventoryapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -76,7 +77,7 @@ public class StockActivity extends AppCompatActivity {
             StockEntry.COLUMN_ITEM_QUANTITY + " - " +
             StockEntry.COLUMN_ITEM_PRICE + " - " +
             StockEntry.COLUMN_SUPPLIER_NAME + " - " +
-            StockEntry.COLUMN_SUPPLIER_PHONE + "\n\n");
+            StockEntry.COLUMN_SUPPLIER_PHONE + "\n");
 
             int idColumnIndex = cursor.getColumnIndex(StockEntry._ID);
             int nameColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_ITEM_NAME);
@@ -94,7 +95,7 @@ public class StockActivity extends AppCompatActivity {
                 String currentSupplier = cursor.getString(supplierColumnIndex);
                 String currentPhone = cursor.getString(phoneColumnIndex);
 
-                displayView.append(currentId + " - " +
+                displayView.append("\n" + currentId + " - " +
                     currentName + " - " +
                     currentPrice + " - " +
                     currentQuantity + " - " +
@@ -117,10 +118,27 @@ public class StockActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_dummy_data:
-                // TODO code to add dummy data to database
+                addSampleItem();
+                displayDatabaseInfo();
+                return true;
             case R.id.action_delete_all_items:
                 // TODO code to delete all items
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // method to add dummy data to demonstrate database
+    private void addSampleItem() {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(StockEntry.COLUMN_ITEM_NAME, "Sourdough Loaf");
+        values.put(StockEntry.COLUMN_ITEM_PRICE, 2);
+        values.put(StockEntry.COLUMN_ITEM_QUANTITY, 5);
+        values.put(StockEntry.COLUMN_SUPPLIER_NAME, "Blinky's Bakery");
+        values.put(StockEntry.COLUMN_SUPPLIER_PHONE, "647-884-5494");
+
+        long newRowId = db.insert(StockEntry.TABLE_NAME, null, values);
     }
 }
