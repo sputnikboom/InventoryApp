@@ -2,8 +2,12 @@
     <string name="app_name">Inventory App</string>
 
     <!-- Labels for the overflow menu -->
-    <string name="insert_dummy_data">Insert Dummy Data</string>
-    <string name="delete_all_items">Delete All Items</string>
+    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+    <string name="action_delete_all_items">Delete All Items</string>
+
+    <!-- Labels for EditorActivity menu options -->
+    <string name="action_save_product">Save</string>
+    <string name="action_delete_product">Delete</string>
 
     <!-- Labels for options in EditorActivity -->
     <string name="label_product_details">Product Details</string>

@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.rachael.inventoryapp.data.StockContract;
 import com.example.rachael.inventoryapp.data.StockContract.StockEntry;
 import com.example.rachael.inventoryapp.data.StockDbHelper;
 
@@ -110,7 +109,7 @@ public class StockActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.stock_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_stock, menu);
         return true;
     }
 
