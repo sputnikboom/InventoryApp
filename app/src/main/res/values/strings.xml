@@ -21,4 +21,8 @@
     <string name="hint_supplier_phone_number">Phone Number</string>
     <string name="add_item">Add Item</string>
 
+    <!-- Toast messages for EditorActivity -->
+    <string name="editor_insert_product_failed">Error encountered when adding product</string>
+    <string name="editor_insert_product_success">Product added successfully</string>
+
 </resources>
