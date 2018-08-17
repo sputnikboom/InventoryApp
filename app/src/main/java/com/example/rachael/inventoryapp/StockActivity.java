@@ -1,7 +1,10 @@
 package com.example.rachael.inventoryapp;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -18,9 +21,12 @@ import android.widget.TextView;
 import com.example.rachael.inventoryapp.data.StockContract.StockEntry;
 import com.example.rachael.inventoryapp.data.StockDbHelper;
 
-public class StockActivity extends AppCompatActivity {
+public class StockActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = StockActivity.class.getSimpleName();
+
+    StockCursorAdapter mCursorAdapter;
+    private static final int STOCK_LOADER = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,35 +47,15 @@ public class StockActivity extends AppCompatActivity {
         View emptyView = findViewById(R.id.empty_text_view);
         stockListView.setEmptyView(emptyView);
 
+        mCursorAdapter = new StockCursorAdapter(this, null);
+        stockListView.setAdapter(mCursorAdapter);
+
+        getLoaderManager().initLoader(STOCK_LOADER, null, this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        displayDatabaseInfo();
-    }
-
-    private void displayDatabaseInfo() {
-
-        String[] databaseProjection = {
-                StockEntry._ID,
-                StockEntry.COLUMN_ITEM_NAME,
-                StockEntry.COLUMN_ITEM_PRICE,
-                StockEntry.COLUMN_ITEM_QUANTITY,
-                StockEntry.COLUMN_SUPPLIER_NAME,
-                StockEntry.COLUMN_SUPPLIER_PHONE
-        };
-
-        Cursor cursor = getContentResolver().query(
-                StockEntry.CONTENT_URI,
-                databaseProjection,
-                null,
-                null,
-                null);
-
-        ListView stockListView = findViewById(R.id.list);
-        StockCursorAdapter adapter = new StockCursorAdapter(this, cursor);
-        stockListView.setAdapter(adapter);
     }
 
     @Override
@@ -83,7 +69,6 @@ public class StockActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_add_dummy_data:
                 addSampleItem();
-                displayDatabaseInfo();
                 return true;
             case R.id.action_delete_all_items:
                 // TODO code to delete all items
@@ -106,5 +91,32 @@ public class StockActivity extends AppCompatActivity {
         if (newUri == null) {
             throw new IllegalArgumentException("Error adding sample product to database");
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {
+                StockEntry._ID,
+                StockEntry.COLUMN_ITEM_NAME,
+                StockEntry.COLUMN_ITEM_PRICE,
+                StockEntry.COLUMN_ITEM_QUANTITY
+        };
+
+        return new CursorLoader(this,
+                StockEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursorAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
     }
 }
