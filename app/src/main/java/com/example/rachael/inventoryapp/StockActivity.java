@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.rachael.inventoryapp.data.StockContract.StockEntry;
@@ -20,8 +21,6 @@ import com.example.rachael.inventoryapp.data.StockDbHelper;
 public class StockActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = StockActivity.class.getSimpleName();
-
-    private StockDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,44 +61,9 @@ public class StockActivity extends AppCompatActivity {
                 null,
                 null);
 
-        TextView displayView = findViewById(R.id.stock_text_view);
-
-        try {
-            displayView.setText("This stock table contains " + cursor.getCount() + " products.\n\n");
-            displayView.append(StockEntry._ID + " - " +
-            StockEntry.COLUMN_ITEM_NAME + " - " +
-            StockEntry.COLUMN_ITEM_QUANTITY + " - " +
-            StockEntry.COLUMN_ITEM_PRICE + " - " +
-            StockEntry.COLUMN_SUPPLIER_NAME + " - " +
-            StockEntry.COLUMN_SUPPLIER_PHONE + "\n");
-
-            int idColumnIndex = cursor.getColumnIndex(StockEntry._ID);
-            int nameColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_ITEM_NAME);
-            int priceColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_ITEM_PRICE);
-            int quantityColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_ITEM_QUANTITY);
-            int supplierColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_SUPPLIER_NAME);
-            int phoneColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_SUPPLIER_PHONE);
-
-            while (cursor.moveToNext()) {
-
-                int currentId = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumnIndex);
-                int currentPrice = cursor.getInt(priceColumnIndex);
-                int currentQuantity = cursor.getInt(quantityColumnIndex);
-                String currentSupplier = cursor.getString(supplierColumnIndex);
-                String currentPhone = cursor.getString(phoneColumnIndex);
-
-                displayView.append("\n" + currentId + " - " +
-                    currentName + " - " +
-                    currentPrice + " - " +
-                    currentQuantity + " - " +
-                    currentSupplier + " - " +
-                    currentPhone);
-                Log.i(LOG_TAG, "this row in the database is" + displayView.getText());
-            }
-        } finally {
-            cursor.close();
-        }
+        ListView stockListView = findViewById(R.id.list);
+        StockCursorAdapter adapter = new StockCursorAdapter(this, cursor);
+        stockListView.setAdapter(adapter);
     }
 
     @Override
