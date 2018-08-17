@@ -19,12 +19,15 @@
         <activity
             android:name=".EditorActivity"
             android:parentActivityName=".StockActivity">
-
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.rachael.inventoryapp.StockActivity" />
         </activity>
+        <provider
+            android:name=".data.StockProvider"
+            android:authorities="com.example.rachael.inventoryapp"
+            android:exported="false" />
     </application>
 
 </manifest>

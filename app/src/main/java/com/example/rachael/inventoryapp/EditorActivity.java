@@ -69,9 +69,6 @@ public class EditorActivity extends AppCompatActivity {
         String supplierString = mSupplierEditText.getText().toString().trim();
         String telephoneString = mTelephoneEditText.getText().toString().trim();
 
-        StockDbHelper mDbHelper = new StockDbHelper(this);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         // create a ContentValues object
         // column names = keys, EditText = values
         ContentValues values = new ContentValues();
@@ -81,10 +78,10 @@ public class EditorActivity extends AppCompatActivity {
         values.put(StockEntry.COLUMN_SUPPLIER_NAME, supplierString);
         values.put(StockEntry.COLUMN_SUPPLIER_PHONE, telephoneString);
 
-        long newRowId = db.insert(StockEntry.TABLE_NAME, null,values);
+        Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
 
         // toast to inform user if action successful for not
-        if (newRowId == -1) {
+        if (newUri == null) {
             Toast.makeText(this, getString(R.string.editor_insert_product_failed),
                     Toast.LENGTH_SHORT).show();
         } else {

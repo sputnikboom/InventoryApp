@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,8 +36,6 @@ public class StockActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        mDbHelper = new StockDbHelper(this);
     }
 
     @Override
@@ -46,7 +45,6 @@ public class StockActivity extends AppCompatActivity {
     }
 
     private void displayDatabaseInfo() {
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String[] databaseProjection = {
                 StockEntry._ID,
@@ -57,12 +55,9 @@ public class StockActivity extends AppCompatActivity {
                 StockEntry.COLUMN_SUPPLIER_PHONE
         };
 
-        Cursor cursor = db.query(
-                StockEntry.TABLE_NAME,
+        Cursor cursor = getContentResolver().query(
+                StockEntry.CONTENT_URI,
                 databaseProjection,
-                null,
-                null,
-                null,
                 null,
                 null,
                 null);
@@ -129,7 +124,6 @@ public class StockActivity extends AppCompatActivity {
 
     // method to add dummy data to demonstrate database
     private void addSampleItem() {
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(StockEntry.COLUMN_ITEM_NAME, "Sourdough Loaf");
@@ -138,6 +132,9 @@ public class StockActivity extends AppCompatActivity {
         values.put(StockEntry.COLUMN_SUPPLIER_NAME, "Blinky's Bakery");
         values.put(StockEntry.COLUMN_SUPPLIER_PHONE, "647-884-5494");
 
-        long newRowId = db.insert(StockEntry.TABLE_NAME, null, values);
+        Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
+        if (newUri == null) {
+            throw new IllegalArgumentException("Error adding sample product to database");
+        }
     }
 }
