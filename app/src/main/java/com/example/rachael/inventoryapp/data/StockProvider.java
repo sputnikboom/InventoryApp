@@ -76,7 +76,15 @@ public class StockProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case STOCK:
+                return StockEntry.CONTENT_LIST_TYPE;
+            case STOCK_ID:
+                return StockEntry.CONTENT_ITEM_BASE_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+        }
     }
 
     @Nullable
@@ -93,13 +101,45 @@ public class StockProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        int rowsDeleted;
+
+        final int match = sUriMatcher.match(uri);
+
+        switch(match) {
+            case STOCK:
+                // delete all rows that match the given selection and selection arguments
+                rowsDeleted = database.delete(StockEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case STOCK_ID:
+                // delete a single row from the database of a given id
+                selection = StockEntry._ID + "=?";
+                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri)) };
+                rowsDeleted = database.delete(StockEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Deletion is not possible for " + uri);
+        }
+        return rowsDeleted;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
-    }
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case STOCK:
+                return updateProduct(uri, values, selection, selectionArgs);
+            case STOCK_ID:
+                selection = StockEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateProduct(uri, values, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not possible for " + uri);
+        }
+        }
+
+
 
     /**
      * Method to add a product to the database, with values provided by the user
@@ -136,4 +176,53 @@ public class StockProvider extends ContentProvider {
         }
         return ContentUris.withAppendedId(uri, id);
     }
+
+    /**
+     * Update products in the database with values provided
+     * Returns the number of rows that were updated
+     */
+    private int updateProduct(Uri uri, ContentValues values, String selection,
+                              String[] selectionArgs) {
+        // check that any values presented are valid and not null
+        if (values.containsKey(StockEntry.COLUMN_ITEM_NAME)) {
+            String name = values.getAsString(StockEntry.COLUMN_ITEM_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Product name required");
+            }
+        }
+        if (values.containsKey(StockEntry.COLUMN_ITEM_PRICE)) {
+            Integer price = values.getAsInteger(StockEntry.COLUMN_ITEM_PRICE);
+            if (price == null) {
+                throw new IllegalArgumentException("Product price required");
+            }
+        }
+        if (values.containsKey(StockEntry.COLUMN_ITEM_QUANTITY)) {
+            Integer quantity = values.getAsInteger(StockEntry.COLUMN_ITEM_QUANTITY);
+            if (quantity == null) {
+                throw new IllegalArgumentException("Product quantity required");
+            }
+        }
+        if (values.containsKey(StockEntry.COLUMN_SUPPLIER_NAME)) {
+            String supplier = values.getAsString(StockEntry.COLUMN_SUPPLIER_NAME);
+            if (supplier == null) {
+                throw new IllegalArgumentException("Supplier's name required");
+            }
+        }
+        if (values.containsKey(StockEntry.COLUMN_SUPPLIER_PHONE)) {
+            String telephone = values.getAsString(StockEntry.COLUMN_SUPPLIER_PHONE);
+            if (telephone == null) {
+                throw new IllegalArgumentException("Supplier's phone number required");
+            }
+        }
+
+        // check if there are any values that need to be updated, if not don't try to
+        if (values.size() == 0) {
+            return 0;
+        }
+        // update the database
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+        int rowsUpdated = database.update(StockEntry.TABLE_NAME, values, selection, selectionArgs);
+        return rowsUpdated;
+    }
+
 }
