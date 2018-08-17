@@ -35,6 +35,12 @@ public class StockActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ListView stockListView = findViewById(R.id.list);
+
+        View emptyView = findViewById(R.id.empty_text_view);
+        stockListView.setEmptyView(emptyView);
+
     }
 
     @Override

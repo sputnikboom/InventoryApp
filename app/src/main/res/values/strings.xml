@@ -5,6 +5,9 @@
     <string name="action_insert_dummy_data">Insert Dummy Data</string>
     <string name="action_delete_all_items">Delete All Items</string>
 
+    <!-- Message for StockActivity -->
+    <string name="empty_view_text">The shelves look a bit empty…\nGet started by adding an item!</string>
+
     <!-- Labels for EditorActivity menu options -->
     <string name="action_save_product">Save</string>
     <string name="action_delete_product">Delete</string>

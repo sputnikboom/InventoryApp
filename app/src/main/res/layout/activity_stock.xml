@@ -21,6 +21,13 @@
         android:layout_height="match_parent"
         android:padding="16dp"/>
 
+    <TextView
+        android:id="@+id/empty_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/empty_view_text"/>
+
     <android.support.design.widget.FloatingActionButton
         android:src="@drawable/baseline_add_white_24"
         android:id="@+id/fab"
