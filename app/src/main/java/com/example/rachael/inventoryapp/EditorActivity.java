@@ -9,6 +9,7 @@ import android.os.ConditionVariable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,7 +34,9 @@ public class EditorActivity extends AppCompatActivity implements
     private EditText mSupplierEditText;
     private EditText mTelephoneEditText;
 
+    private static final int EXISTING_PRODUCT_LOADER = 0;
     private Uri mCurrentProductUri;
+
 
     private String LOG_TAG = EditorActivity.class.getSimpleName();
     @Override
@@ -47,10 +50,10 @@ public class EditorActivity extends AppCompatActivity implements
         if (mCurrentProductUri == null) {
             setTitle(getString(R.string.editor_title_new_product));
             invalidateOptionsMenu();
-            Log.e(LOG_TAG, "New Product Screen Success");
         } else {
             setTitle(getString(R.string.editor_title_existing_product));
-            Log.e(LOG_TAG, "Update product screen success");
+
+            getSupportLoaderManager().initLoader(EXISTING_PRODUCT_LOADER, null, this);
         }
 
         // find all the views that will need to be read when checking user input
@@ -116,16 +119,58 @@ public class EditorActivity extends AppCompatActivity implements
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
-        return null;
+        String[] projection = {
+                StockEntry._ID,
+                StockEntry.COLUMN_ITEM_NAME,
+                StockEntry.COLUMN_ITEM_PRICE,
+                StockEntry.COLUMN_ITEM_QUANTITY,
+                StockEntry.COLUMN_SUPPLIER_NAME,
+                StockEntry.COLUMN_SUPPLIER_PHONE
+        };
+
+        return new CursorLoader(this,
+                mCurrentProductUri,
+                projection,
+                null,
+                null,
+                null);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
 
+        if (data == null || data.getCount() < 1) {
+            return;
+        }
+
+        if (data.moveToFirst()) {
+            int nameColumnIndex = data.getColumnIndex(StockEntry.COLUMN_ITEM_NAME);
+            int priceColumnIndex = data.getColumnIndex(StockEntry.COLUMN_ITEM_PRICE);
+            int quantityColumnIndex = data.getColumnIndex(StockEntry.COLUMN_ITEM_QUANTITY);
+            int supplierColumnIndex = data.getColumnIndex(StockEntry.COLUMN_SUPPLIER_NAME);
+            int telephoneColumnIndex = data.getColumnIndex(StockEntry.COLUMN_SUPPLIER_PHONE);
+
+            String name = data.getString(nameColumnIndex);
+            int price = data.getInt(priceColumnIndex);
+            int quantity = data.getInt(quantityColumnIndex);
+            String supplier = data.getString(supplierColumnIndex);
+            String telephone = data.getString(telephoneColumnIndex);
+
+            mNameEditText.setText(name);
+            mPriceEditText.setText(Integer.toString(price));
+            mQuantityEditText.setText(Integer.toString(quantity));
+            mSupplierEditText.setText(supplier);
+            mTelephoneEditText.setText(telephone);
+        }
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
+        mNameEditText.setText("");
+        mPriceEditText.setText("");
+        mQuantityEditText.setText("");
+        mSupplierEditText.setText("");
+        mTelephoneEditText.setText("");
     }
 }
