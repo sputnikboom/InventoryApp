@@ -36,8 +36,8 @@ public class StockCursorAdapter extends CursorAdapter {
         int quantityColumnIndex = cursor.getColumnIndex(StockEntry.COLUMN_ITEM_QUANTITY);
 
         String productName = cursor.getString(nameColumnIndex);
-        String productPrice = cursor.getColumnName(priceColumnIndex);
-        String productQuantity = cursor.getColumnName(quantityColumnIndex);
+        String productPrice = cursor.getString(priceColumnIndex);
+        String productQuantity = cursor.getString(quantityColumnIndex);
 
         nameTextView.setText(productName);
         priceTextView.setText(productPrice);

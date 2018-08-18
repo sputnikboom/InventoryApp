@@ -28,4 +28,8 @@
     <string name="editor_insert_product_failed">Error encountered when adding product</string>
     <string name="editor_insert_product_success">Product added successfully</string>
 
+    <!-- Titles for EditorActivity -->
+    <string name="editor_title_new_product">Add Product</string>
+    <string name="editor_title_existing_product">Edit Product</string>
+
 </resources>

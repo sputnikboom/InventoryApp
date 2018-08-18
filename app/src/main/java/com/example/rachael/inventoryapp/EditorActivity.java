@@ -1,11 +1,18 @@
 package com.example.rachael.inventoryapp;
 
 import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.ConditionVariable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +23,8 @@ import com.example.rachael.inventoryapp.data.StockContract;
 import com.example.rachael.inventoryapp.data.StockContract.StockEntry;
 import com.example.rachael.inventoryapp.data.StockDbHelper;
 
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>{
 
     // EditText fields for all different product attributes
     private EditText mNameEditText;
@@ -25,10 +33,25 @@ public class EditorActivity extends AppCompatActivity {
     private EditText mSupplierEditText;
     private EditText mTelephoneEditText;
 
+    private Uri mCurrentProductUri;
+
+    private String LOG_TAG = EditorActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
+
+        Intent intent = getIntent();
+        mCurrentProductUri = intent.getData();
+
+        if (mCurrentProductUri == null) {
+            setTitle(getString(R.string.editor_title_new_product));
+            invalidateOptionsMenu();
+            Log.e(LOG_TAG, "New Product Screen Success");
+        } else {
+            setTitle(getString(R.string.editor_title_existing_product));
+            Log.e(LOG_TAG, "Update product screen success");
+        }
 
         // find all the views that will need to be read when checking user input
         mNameEditText = findViewById(R.id.edit_product_name);
@@ -88,5 +111,21 @@ public class EditorActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.editor_insert_product_success),
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+
     }
 }

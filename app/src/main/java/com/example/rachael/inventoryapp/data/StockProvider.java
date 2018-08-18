@@ -121,6 +121,11 @@ public class StockProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Deletion is not possible for " + uri);
         }
+
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
         return rowsDeleted;
     }
 
@@ -174,6 +179,9 @@ public class StockProvider extends ContentProvider {
             Log.e(LOG_TAG, "Failed to insert row for " + uri + " to database");
             return null;
         }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -221,7 +229,13 @@ public class StockProvider extends ContentProvider {
         }
         // update the database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
         int rowsUpdated = database.update(StockEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
         return rowsUpdated;
     }
 
