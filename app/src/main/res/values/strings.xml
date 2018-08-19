@@ -35,4 +35,9 @@
     <string name="editor_title_new_product">Add Product</string>
     <string name="editor_title_existing_product">Edit Product</string>
 
+    <!-- Dialog alert text for EditorActivity -->
+    <string name="dialog_unsaved_changes">Discard your changes and quit editing?</string>
+    <string name="dialog_discard_changes">Discard</string>
+    <string name="dialog_keep_editing">Keep Editing</string>
+
 </resources>

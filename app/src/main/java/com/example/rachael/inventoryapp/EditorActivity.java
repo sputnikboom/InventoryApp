@@ -1,6 +1,7 @@
 package com.example.rachael.inventoryapp;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,8 +10,10 @@ import android.os.ConditionVariable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +21,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -37,6 +42,15 @@ public class EditorActivity extends AppCompatActivity implements
 
     private static final int EXISTING_PRODUCT_LOADER = 0;
     private Uri mCurrentProductUri;
+    private boolean mProductHasChanged = false;
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mProductHasChanged = true;
+            return false;
+        }
+    };
 
 
     private String LOG_TAG = EditorActivity.class.getSimpleName();
@@ -63,6 +77,13 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText = findViewById(R.id.edit_stock_quantity);
         mSupplierEditText = findViewById(R.id.edit_supplier_name);
         mTelephoneEditText = findViewById(R.id.edit_supplier_phone_num);
+
+        // check if any fields have been changed
+        mNameEditText.setOnTouchListener(mTouchListener);
+        mPriceEditText.setOnTouchListener(mTouchListener);
+        mQuantityEditText.setOnTouchListener(mTouchListener);
+        mSupplierEditText.setOnTouchListener(mTouchListener);
+        mTelephoneEditText.setOnTouchListener(mTouchListener);
     }
 
     @Override
@@ -91,6 +112,21 @@ public class EditorActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_delete_product:
                 // TODO add functionality
+                return true;
+            case android.R.id.home:
+                if (!mProductHasChanged) {
+                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    return true;
+                }
+                //if user has unsaved changes, alert them
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                            }
+                        };
+                showUnsavedChangesAlert(discardButtonClickListener);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -219,5 +255,22 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setText("");
         mSupplierEditText.setText("");
         mTelephoneEditText.setText("");
+    }
+
+    // Alert that the user is shown when trying to leave activity with unsaved changes
+    private void showUnsavedChangesAlert(DialogInterface.OnClickListener discardButtonClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_unsaved_changes);
+        builder.setPositiveButton(R.string.dialog_discard_changes, discardButtonClickListener);
+        builder.setNegativeButton(R.string.dialog_keep_editing, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
