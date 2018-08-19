@@ -13,6 +13,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -64,6 +65,16 @@ public class EditorActivity extends AppCompatActivity implements
         mTelephoneEditText = findViewById(R.id.edit_supplier_phone_num);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (mCurrentProductUri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete_product);
+            menuItem.setVisible(false);
+        }
+        return true;
+    }
+
     // inflate overflow menu options
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -95,24 +106,50 @@ public class EditorActivity extends AppCompatActivity implements
         String supplierString = mSupplierEditText.getText().toString().trim();
         String telephoneString = mTelephoneEditText.getText().toString().trim();
 
+        // check if all fields are blank, and if it's a new product
+        if (mCurrentProductUri == null &&
+                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
+                TextUtils.isEmpty(quantityString) && TextUtils.isEmpty(supplierString) &&
+                TextUtils.isEmpty(telephoneString)) {
+            return;
+        }
+
         // create a ContentValues object
         // column names = keys, EditText = values
         ContentValues values = new ContentValues();
         values.put(StockEntry.COLUMN_ITEM_NAME, nameString);
         values.put(StockEntry.COLUMN_ITEM_PRICE, priceString);
-        values.put(StockEntry.COLUMN_ITEM_QUANTITY, quantityString);
+        // if no value has been provided for the quantity, use 0 as default
+        int quantity = 0;
+        if (!TextUtils.isEmpty(quantityString)) {
+            quantity = Integer.parseInt(quantityString);
+        }
+        values.put(StockEntry.COLUMN_ITEM_QUANTITY, quantity);
         values.put(StockEntry.COLUMN_SUPPLIER_NAME, supplierString);
         values.put(StockEntry.COLUMN_SUPPLIER_PHONE, telephoneString);
 
-        Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
-
         // toast to inform user if action successful for not
-        if (newUri == null) {
-            Toast.makeText(this, getString(R.string.editor_insert_product_failed),
-                    Toast.LENGTH_SHORT).show();
+        if (mCurrentProductUri == null) {
+
+            Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
+
+            if (newUri == null) {
+                Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_insert_product_success),
+                        Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, getString(R.string.editor_insert_product_success),
-                    Toast.LENGTH_SHORT).show();
+            int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+
+            if (rowsAffected == 0) {
+                Toast.makeText(this, getString(R.string.editor_update_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_update_product_success),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
