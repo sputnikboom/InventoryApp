@@ -25,6 +25,7 @@
     <string name="label_product_details">Product Details</string>
     <string name="label_stock_details">Stock Details</string>
     <string name="label_supplier_details">Supplier Details</string>
+    <string name="label_call_supplier">Call</string>
 
     <!-- Hints for fields in EditorActivity -->
     <string name="hint_name">Name</string>
