@@ -30,6 +30,8 @@
     <string name="editor_update_product_failed">Error encountered when updating product</string>
     <string name="editor_update_product_success">Product updated successfully</string>
     <string name="editor_required_fields_warning">Please fill all required fields</string>
+    <string name="editor_delete_product_failed">Error encountered when deleting product</string>
+    <string name="editor_delete_product_success">Product deleted successfully</string>
 
     <!-- Titles for EditorActivity -->
     <string name="editor_title_new_product">Add Product</string>
@@ -39,5 +41,8 @@
     <string name="dialog_unsaved_changes">Discard your changes and quit editing?</string>
     <string name="dialog_discard_changes">Discard</string>
     <string name="dialog_keep_editing">Keep Editing</string>
+    <string name="dialog_delete_changes">"Delete this product?</string>
+    <string name="dialog_delete_confirm">Delete</string>
+    <string name="dialog_delete_cancel">Cancel</string>
 
 </resources>

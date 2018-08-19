@@ -1,12 +1,11 @@
 package com.example.rachael.inventoryapp;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.ConditionVariable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -17,21 +16,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.rachael.inventoryapp.data.StockContract;
 import com.example.rachael.inventoryapp.data.StockContract.StockEntry;
-import com.example.rachael.inventoryapp.data.StockDbHelper;
 
 public class EditorActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     // EditText fields for all different product attributes
     private EditText mNameEditText;
@@ -54,6 +49,8 @@ public class EditorActivity extends AppCompatActivity implements
 
 
     private String LOG_TAG = EditorActivity.class.getSimpleName();
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,12 +103,12 @@ public class EditorActivity extends AppCompatActivity implements
     // actions when menu options selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_save_product:
                 checkProduct();
                 return true;
             case R.id.action_delete_product:
-                // TODO add functionality
+                showDeleteConfirmationDialog();
                 return true;
             case android.R.id.home:
                 if (!mProductHasChanged) {
@@ -151,7 +148,7 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
 
-        // get user input from EditText fields and save into the database
+    // get user input from EditText fields and save into the database
     private void saveProduct() {
         // read from the EditText views
         String nameString = mNameEditText.getText().toString().trim();
@@ -160,44 +157,59 @@ public class EditorActivity extends AppCompatActivity implements
         String supplierString = mSupplierEditText.getText().toString().trim();
         String telephoneString = mTelephoneEditText.getText().toString().trim();
 
-            // create a ContentValues object
-            // column names = keys, EditText = values
-            ContentValues values = new ContentValues();
-            values.put(StockEntry.COLUMN_ITEM_NAME, nameString);
-            values.put(StockEntry.COLUMN_ITEM_PRICE, priceString);
-            // if no value has been provided for the quantity, use 0 as default
-            int quantity = 0;
-            if (!TextUtils.isEmpty(quantityString)) {
-                quantity = Integer.parseInt(quantityString);
-            }
-            values.put(StockEntry.COLUMN_ITEM_QUANTITY, quantity);
-            values.put(StockEntry.COLUMN_SUPPLIER_NAME, supplierString);
-            values.put(StockEntry.COLUMN_SUPPLIER_PHONE, telephoneString);
+        // create a ContentValues object
+        // column names = keys, EditText = values
+        ContentValues values = new ContentValues();
+        values.put(StockEntry.COLUMN_ITEM_NAME, nameString);
+        values.put(StockEntry.COLUMN_ITEM_PRICE, priceString);
+        // if no value has been provided for the quantity, use 0 as default
+        int quantity = 0;
+        if (!TextUtils.isEmpty(quantityString)) {
+            quantity = Integer.parseInt(quantityString);
+        }
+        values.put(StockEntry.COLUMN_ITEM_QUANTITY, quantity);
+        values.put(StockEntry.COLUMN_SUPPLIER_NAME, supplierString);
+        values.put(StockEntry.COLUMN_SUPPLIER_PHONE, telephoneString);
 
-            // toast to inform user if action successful for not
-            if (mCurrentProductUri == null) {
+        // toast to inform user if action successful for not
+        if (mCurrentProductUri == null) {
 
-                Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
+            Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
 
-                if (newUri == null) {
-                    Toast.makeText(this, getString(R.string.editor_insert_product_failed),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, getString(R.string.editor_insert_product_success),
-                            Toast.LENGTH_SHORT).show();
-                }
+            if (newUri == null) {
+                Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                        Toast.LENGTH_SHORT).show();
             } else {
-                int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+                Toast.makeText(this, getString(R.string.editor_insert_product_success),
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
 
-                if (rowsAffected == 0) {
-                    Toast.makeText(this, getString(R.string.editor_update_product_failed),
-                            Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, getString(R.string.editor_update_product_success),
-                            Toast.LENGTH_SHORT).show();
-                }
+            if (rowsAffected == 0) {
+                Toast.makeText(this, getString(R.string.editor_update_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_update_product_success),
+                        Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    private void deleteProduct() {
+        if (mCurrentProductUri != null) {
+            int rowsDeleted = getContentResolver().delete(mCurrentProductUri, null, null);
+
+            if (rowsDeleted == 0) {
+                Toast.makeText(this, getString(R.string.editor_delete_product_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.editor_delete_product_success),
+                        Toast.LENGTH_SHORT).show();
+            }
+            finish();
+        }
+    }
 
     @NonNull
     @Override
@@ -273,4 +285,28 @@ public class EditorActivity extends AppCompatActivity implements
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
+    //ask for user confirmation before deleting product from database
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_delete_changes);
+        // user selects delete option
+        builder.setPositiveButton(R.string.dialog_delete_confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteProduct();
+            }
+        });
+        builder.setNegativeButton(R.string.dialog_delete_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 }
