@@ -87,8 +87,7 @@ public class EditorActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_save_product:
-                saveProduct();
-                finish();
+                checkProduct();
                 return true;
             case R.id.action_delete_product:
                 // TODO add functionality
@@ -97,7 +96,26 @@ public class EditorActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    // get user input from EditText fields and save into the database
+    private void checkProduct() {
+
+        String nameString = mNameEditText.getText().toString().trim();
+        String priceString = mPriceEditText.getText().toString().trim();
+        String supplierString = mSupplierEditText.getText().toString().trim();
+        String telephoneString = mTelephoneEditText.getText().toString().trim();
+
+        if (mCurrentProductUri == null && TextUtils.isEmpty(nameString) ||
+                TextUtils.isEmpty(priceString) || TextUtils.isEmpty(supplierString) ||
+                TextUtils.isEmpty(telephoneString)) {
+            Toast.makeText(this, getString(R.string.editor_required_fields_warning),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            saveProduct();
+            finish();
+        }
+    }
+
+
+        // get user input from EditText fields and save into the database
     private void saveProduct() {
         // read from the EditText views
         String nameString = mNameEditText.getText().toString().trim();
@@ -106,52 +124,44 @@ public class EditorActivity extends AppCompatActivity implements
         String supplierString = mSupplierEditText.getText().toString().trim();
         String telephoneString = mTelephoneEditText.getText().toString().trim();
 
-        // check if all fields are blank, and if it's a new product
-        if (mCurrentProductUri == null &&
-                TextUtils.isEmpty(nameString) && TextUtils.isEmpty(priceString) &&
-                TextUtils.isEmpty(quantityString) && TextUtils.isEmpty(supplierString) &&
-                TextUtils.isEmpty(telephoneString)) {
-            return;
-        }
-
-        // create a ContentValues object
-        // column names = keys, EditText = values
-        ContentValues values = new ContentValues();
-        values.put(StockEntry.COLUMN_ITEM_NAME, nameString);
-        values.put(StockEntry.COLUMN_ITEM_PRICE, priceString);
-        // if no value has been provided for the quantity, use 0 as default
-        int quantity = 0;
-        if (!TextUtils.isEmpty(quantityString)) {
-            quantity = Integer.parseInt(quantityString);
-        }
-        values.put(StockEntry.COLUMN_ITEM_QUANTITY, quantity);
-        values.put(StockEntry.COLUMN_SUPPLIER_NAME, supplierString);
-        values.put(StockEntry.COLUMN_SUPPLIER_PHONE, telephoneString);
-
-        // toast to inform user if action successful for not
-        if (mCurrentProductUri == null) {
-
-            Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
-
-            if (newUri == null) {
-                Toast.makeText(this, getString(R.string.editor_insert_product_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, getString(R.string.editor_insert_product_success),
-                        Toast.LENGTH_SHORT).show();
+            // create a ContentValues object
+            // column names = keys, EditText = values
+            ContentValues values = new ContentValues();
+            values.put(StockEntry.COLUMN_ITEM_NAME, nameString);
+            values.put(StockEntry.COLUMN_ITEM_PRICE, priceString);
+            // if no value has been provided for the quantity, use 0 as default
+            int quantity = 0;
+            if (!TextUtils.isEmpty(quantityString)) {
+                quantity = Integer.parseInt(quantityString);
             }
-        } else {
-            int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+            values.put(StockEntry.COLUMN_ITEM_QUANTITY, quantity);
+            values.put(StockEntry.COLUMN_SUPPLIER_NAME, supplierString);
+            values.put(StockEntry.COLUMN_SUPPLIER_PHONE, telephoneString);
 
-            if (rowsAffected == 0) {
-                Toast.makeText(this, getString(R.string.editor_update_product_failed),
-                        Toast.LENGTH_SHORT).show();
+            // toast to inform user if action successful for not
+            if (mCurrentProductUri == null) {
+
+                Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
+
+                if (newUri == null) {
+                    Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, getString(R.string.editor_insert_product_success),
+                            Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(this, getString(R.string.editor_update_product_success),
-                        Toast.LENGTH_SHORT).show();
+                int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+
+                if (rowsAffected == 0) {
+                    Toast.makeText(this, getString(R.string.editor_update_product_failed),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, getString(R.string.editor_update_product_success),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
-    }
 
     @NonNull
     @Override
