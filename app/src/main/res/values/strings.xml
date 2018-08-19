@@ -42,6 +42,7 @@
     <string name="editor_required_fields_warning">Please fill all required fields</string>
     <string name="editor_delete_product_failed">Error encountered when deleting product</string>
     <string name="editor_delete_product_success">Product deleted successfully</string>
+    <string name="editor_quantity_warning">Quantity cannot go below 0</string>
 
     <!-- Titles for EditorActivity -->
     <string name="editor_title_new_product">Add Product</string>

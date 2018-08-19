@@ -92,12 +92,29 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mTelephoneEditText.setOnTouchListener(mTouchListener);
+        increaseQuantityButton.setOnTouchListener(mTouchListener);
+        decreaseQuantityButton.setOnTouchListener(mTouchListener);
+
 
         // set onClickListeners for various buttons
         callSupplierButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 callSupplier();
+            }
+        });
+
+        increaseQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increaseQuantity();
+            }
+        });
+
+        decreaseQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decreaseQuantity();
             }
         });
     }
@@ -336,4 +353,22 @@ public class EditorActivity extends AppCompatActivity implements
         startActivity(callIntent);
     }
 
+    private void increaseQuantity() {
+        int currentQuantity = Integer.parseInt(mQuantityEditText.getText().toString());
+
+            currentQuantity++;
+            mQuantityEditText.setText(Integer.toString(currentQuantity));
+    }
+
+    private void decreaseQuantity() {
+        int currentQuantity = Integer.parseInt(mQuantityEditText.getText().toString());
+
+        if (currentQuantity != 0) {
+            currentQuantity--;
+            mQuantityEditText.setText(Integer.toString(currentQuantity));
+        } else {
+            Toast.makeText(this, R.string.editor_quantity_warning,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
 }
