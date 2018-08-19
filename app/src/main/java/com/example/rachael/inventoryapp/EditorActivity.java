@@ -20,7 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.rachael.inventoryapp.data.StockContract.StockEntry;
@@ -58,10 +60,19 @@ public class EditorActivity extends AppCompatActivity implements
 
         Intent intent = getIntent();
         mCurrentProductUri = intent.getData();
+        final Button callSupplierButton = findViewById(R.id.action_call_supplier);
+        final ImageButton increaseQuantityButton = findViewById(R.id.action_quantity_increase);
+        final ImageButton decreaseQuantityButton = findViewById(R.id.action_quantity_decrease);
+
 
         if (mCurrentProductUri == null) {
             setTitle(getString(R.string.editor_title_new_product));
             invalidateOptionsMenu();
+            // make buttons invisible if adding new product
+            callSupplierButton.setVisibility(View.GONE);
+            increaseQuantityButton.setVisibility(View.GONE);
+            decreaseQuantityButton.setVisibility(View.GONE);
+
         } else {
             setTitle(getString(R.string.editor_title_existing_product));
 
@@ -81,6 +92,14 @@ public class EditorActivity extends AppCompatActivity implements
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mTelephoneEditText.setOnTouchListener(mTouchListener);
+
+        // set onClickListeners for various buttons
+        callSupplierButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callSupplier();
+            }
+        });
     }
 
     @Override
@@ -307,6 +326,9 @@ public class EditorActivity extends AppCompatActivity implements
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private void callSupplier() {
     }
 
 }
