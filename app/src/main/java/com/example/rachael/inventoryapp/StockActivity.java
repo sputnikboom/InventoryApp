@@ -1,9 +1,11 @@
 package com.example.rachael.inventoryapp;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rachael.inventoryapp.data.StockContract.StockEntry;
 import com.example.rachael.inventoryapp.data.StockDbHelper;
@@ -83,7 +86,7 @@ public class StockActivity extends AppCompatActivity implements LoaderManager.Lo
                 addSampleItem();
                 return true;
             case R.id.action_delete_all_items:
-                // TODO code to delete all items
+                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -102,6 +105,42 @@ public class StockActivity extends AppCompatActivity implements LoaderManager.Lo
         Uri newUri = getContentResolver().insert(StockEntry.CONTENT_URI, values);
         if (newUri == null) {
             throw new IllegalArgumentException("Error adding sample product to database");
+        }
+    }
+
+    // ask user to confirm that they want to delete all items from database
+    private void showDeleteConfirmationDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_delete_all_products);
+        // user selects delete
+        builder.setPositiveButton(R.string.dialog_delete_all_confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteAllProducts();
+            }
+        });
+        builder.setNegativeButton(R.string.dialog_delete_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    // method to delete all products in the database
+    private void deleteAllProducts() {
+        int rowsDeleted = getContentResolver().delete(StockEntry.CONTENT_URI, null, null);
+
+        if (rowsDeleted == 0) {
+            Toast.makeText(this, getString(R.string.stock_delete_all_failed),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getString(R.string.stock_delete_all_success),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

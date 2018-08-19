@@ -8,6 +8,15 @@
     <!-- Message for StockActivity -->
     <string name="empty_view_text">The shelves look a bit empty…\nGet started by adding an item!</string>
 
+    <!-- Dialog messages for StockActivity -->
+    <string name="dialog_delete_all_products">Delete all products?</string>
+    <string name="dialog_delete_all_confirm">Delete</string>
+    <string name="dialog_delete_all_cancel">Cancel</string>
+
+    <!-- Toast messages for StockActivity -->
+    <string name="stock_delete_all_failed">Error encountered when deleting products</string>
+    <string name="stock_delete_all_success">All products deleted successfully</string>
+
     <!-- Labels for EditorActivity menu options -->
     <string name="action_save_product">Save</string>
     <string name="action_delete_product">Delete</string>
