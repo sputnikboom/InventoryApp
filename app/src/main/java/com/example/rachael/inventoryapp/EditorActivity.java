@@ -329,6 +329,11 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     private void callSupplier() {
+        String telephoneNumber = "tel:" + mTelephoneEditText.getText().toString().trim();
+
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse(telephoneNumber));
+        startActivity(callIntent);
     }
 
 }
