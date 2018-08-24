@@ -16,6 +16,8 @@
     <!-- Toast messages for StockActivity -->
     <string name="stock_delete_all_failed">Error encountered when deleting products</string>
     <string name="stock_delete_all_success">All products deleted successfully</string>
+    <string name="stock_update_failed">Error encountered when processing sale</string>
+    <string name="stock_quantity_warning">Quantity cannot go below zero</string>
 
     <!-- Labels for EditorActivity menu options -->
     <string name="action_save_product">Save</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/list_item"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
@@ -36,6 +37,8 @@
         android:id="@+id/sale_button"
         android:src="@drawable/baseline_shopping_cart_black_24"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:focusableInTouchMode="false"/>
 
 </LinearLayout>

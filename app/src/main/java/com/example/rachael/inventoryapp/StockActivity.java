@@ -55,16 +55,6 @@ public class StockActivity extends AppCompatActivity implements LoaderManager.Lo
         mCursorAdapter = new StockCursorAdapter(this, null);
         stockListView.setAdapter(mCursorAdapter);
 
-        stockListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(StockActivity.this, EditorActivity.class);
-                Uri currentProductUri = ContentUris.withAppendedId(StockEntry.CONTENT_URI, id);
-                intent.setData(currentProductUri);
-                startActivity(intent);
-            }
-        });
-
         getLoaderManager().initLoader(STOCK_LOADER, null, this);
     }
 
