@@ -31,5 +31,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="this is the remaining stock"/>
-<!-- TODO add buttons here???? -->
+
+    <ImageButton
+        android:id="@+id/sale_button"
+        android:src="@drawable/baseline_shopping_cart_black_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
