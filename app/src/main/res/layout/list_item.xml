@@ -6,18 +6,20 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="16dp">
-    <!-- TODO: make it prettier -->
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/list_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="product name" />
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            tools:text="product name"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -27,9 +29,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingRight="2dp"
                 android:text="@string/price_label"
-                tools:text="price"
-                android:paddingRight="2dp"/>
+                tools:text="price"/>
 
             <TextView
                 android:id="@+id/list_product_price"
@@ -48,9 +50,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingRight="2dp"
                 android:text="@string/quantity_label"
-                tools:text="quantity"
-                android:paddingRight="2dp"/>
+                tools:text="quantity"/>
 
             <TextView
                 android:id="@+id/list_product_quantity"
@@ -65,9 +67,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_gravity="center_vertical"
-        >
+        android:orientation="vertical">
 
 
         <ImageButton
