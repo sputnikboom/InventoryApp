@@ -172,9 +172,8 @@ public class EditorActivity extends AppCompatActivity implements
         String supplierString = mSupplierEditText.getText().toString().trim();
         String telephoneString = mTelephoneEditText.getText().toString().trim();
 
-        if (mCurrentProductUri == null && TextUtils.isEmpty(nameString) ||
-                TextUtils.isEmpty(priceString) || TextUtils.isEmpty(supplierString) ||
-                TextUtils.isEmpty(telephoneString)) {
+        if (TextUtils.isEmpty(nameString) || TextUtils.isEmpty(priceString) ||
+        TextUtils.isEmpty(supplierString) || TextUtils.isEmpty(telephoneString)) {
             Toast.makeText(this, getString(R.string.editor_required_fields_warning),
                     Toast.LENGTH_SHORT).show();
         } else {

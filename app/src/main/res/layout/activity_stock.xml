@@ -7,8 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".StockActivity">
 
-    <!-- TODO add empty view when database has no items -->
-
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"

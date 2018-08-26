@@ -96,20 +96,5 @@ public class StockCursorAdapter extends CursorAdapter {
                 }
             }
         });
-
-
-//
-//                } else {
-//                    quantity--;
-//                    values.put(StockEntry.COLUMN_ITEM_QUANTITY, quantity);
-//                    quantityString = Integer.toString(quantity);
-//                    quantityTextView.setText(quantityString);
-//                }
-//            }
-//        });
-
     }
 }
-
-
-
