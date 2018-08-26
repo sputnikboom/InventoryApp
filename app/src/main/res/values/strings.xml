@@ -7,6 +7,8 @@
 
     <!-- Message for StockActivity -->
     <string name="empty_view_text">The shelves look a bit empty…\nGet started by adding an item!</string>
+    <string name="quantity_label">Quantity:</string>
+    <string name="price_label">Price: £</string>
 
     <!-- Dialog messages for StockActivity -->
     <string name="dialog_delete_all_products">Delete all products?</string>
